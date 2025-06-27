@@ -408,7 +408,7 @@
 
     <script>
 
-        const API_BASE_URL = window.location.hostname === 'localhost' ? 'http://localhost:3000' : `http://${window.location.hostname}:3000`;
+        const API_BASE_URL = window.location.origin;
         document.addEventListener('DOMContentLoaded', function() {
             const luxuryBg = document.getElementById('luxuryBg');
             const diamondsCount = 15;
