@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chatav</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" integrity="sha384-tViUnnbYAV00FLIhhi3v/dWt3Jxw4gZQcNoSCxCIFNJVCx7/D55/wXsrNIRANwdD" crossorigin="anonymous">
+</head>
+<body>
+    <!-- id matching related component here -->
+    <div class="navigation">
+        <div class="texttile">
+            <h2>Chatav</h2>
+            <img src="app.png" alt="img" id="iconimg" class="iconimg">
+        </div>
+        <div class="icon_matter"><i class="bi bi-house-fill active" data-action="home"></i>
+            Home
+        </div>
+        <!-- <div class="icon_matter"><i class="bi bi-person-fill" data-action="profile"></i>Profile</div> -->
+        <!-- <div class="icon_matter"><i class="bi bi-gear-fill" data-action="setting"></i>Settings</div> -->
+        <div class="icon_matter"><i class="bi bi-messenger disabled" data-action="messege"></i>messege</div>
+        <button class="disconnect" id="disconnect">disconnect</button>
+    </div>
+    <div class="home_main-cont" id="HOME">
+        <div class="div_upper">
+            <div class="button_loader" id="btn_loader">
+                CONNECT
+            </div>
+        </div>
+        <div class="div_down">
+            <div class="card" id="card">
+                <div class="card_inner_stracture" id="card_inner_stracture">
+                    <div class="profile_icon" id="profile_icon">
+                        <img src="/icon.png" alt="">
+                        
+                    </div>
+                    <div class="profile_name" id="profile_name">This Feture</div>
+                    <div class="profile_id" id="profile_id">Coming Soon..</div>
+                    <button id="card_btn" class="card_btn">
+                        Invite
+                        <i class="bi bi-patch-plus-fill"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="MESSEGE" id="MESSEGE">
+        <div class="messege_mainBody">
+            <div class="messegeNAV">
+                <div class="navPROFILE_IMG">
+                    <img src="/icon.png" alt="">
+                </div>
+                <div class="navNAMEDETAILS">
+                    <div class="nav_user_name">ChatavUser</div>
+                    <div class="nav_user_status">
+                        <span class="green_dot"></span>
+                        <span>Online</span>
+                    </div>
+                </div>
+            </div>
+            <div class="messegeBODY" id="messegeBODY">
+                <div id="typing-indicator" style="display: none; color: #666; font-size: 0.8em; padding: 5px 10px;"></div>
+            </div>
+            <div class="inputAREA">
+                <input type="text" placeholder="send anything" id="textINPUT">
+                <div class="SENDAREA" id="SENDAREA">
+                    <i class="bi bi-arrow-right-circle-fill" id="sendli"></i> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="SETTINGS" id="SETTINGS">
+        <div class="setting_mainBODY">
+            <div class="setting_upperDIV">
+                <div class="text">SETTING</div>
+                <button class="information">information</button>
+                <button class="sounds">sound</button>
+                <button class="theme">theme</button>
+                <button class="privacy">privacy</button>
+                <button class="activelog">active log</button>
+                <button class="deleteaccount">delete account</button>
+                <button class="signin">signin</button>
+                <button class="logout">logout</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="PROFILE" id="PROFILE">
+        <div class="profile_mainBODY">
+            <div class="profile_connDIV">
+                <div class="text">Profile</div>
+                
+            </div>
+        </div>
+    </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+
+</body>
+</html>
