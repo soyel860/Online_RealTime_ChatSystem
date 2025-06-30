@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Chatav</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="./welcome.css">
+</head>
+<body>
+  <div class="bubbles" id="bubbles"></div>
+  <nav style="background-color: #6c5ce7;">
+    <a href="/" class="nav-brand">CHATAV</a>
+    <div class="nav-links">
+      <a href="/privacy" class="nav-link">Privacy</a>
+      <a href="/term" class="nav-link">Terms</a>
+      <a href="/about" class="nav-link">About Dev</a>
+    </div>
+  </nav>
+  <div class="welcome-container">
+    <h1>Welcome To Chatav</h1>
+    <p>Connect with your chat partner instantly</p>
+    <div class="avatar-upload">
+      <div class="avatar-preview" id="avatarPreview">
+        <span class="material-icons">person</span>
+      </div>
+      <label class="upload-btn">
+        <input type="file" id="avatarInput" accept="image/*">
+        Choose Profile Picture
+      </label>
+    </div>
+    <div class="input-container">
+      <input type="text" class="input-field" placeholder="Enter your name" id="nameInput" />
+    </div>
+    <div class="age-check">
+      <input type="checkbox" id="ageCheckbox" required>
+      <label for="ageCheckbox">I confirm I am 13 years old or above</label>
+    </div>
+    <button class="continue-btn" id="continueBtn" onclick="redirectToHome()" disabled>Continue</button>
+  </div>
+  <script src="./welcome.js"></script>
+</body>
+</html>

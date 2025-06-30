@@ -1,4 +1,3 @@
-// DOM Elements
 const navIcons = document.querySelectorAll('.navigation i');
 const HOME = document.getElementById('HOME');
 const MESSEGE = document.getElementById('MESSEGE');
@@ -8,18 +7,34 @@ const btn_loader = document.getElementById('btn_loader');
 const buttondis = document.getElementById('disconnect');
 const textINPUT = document.getElementById('textINPUT');
 const messegeBODY = document.getElementById('messegeBODY');
+const nav_patner = document.getElementById('nav_patner');
+const nav_img = document.getElementById('nav_img');
+const sendli = document.getElementById('sendli');
 
-// State Variables
-buttondis.style.display = 'none';
 let btn_loader_toggle = false;
 let partnerId = null;
 let typingTimeout = null;
 let typingIndicatorVisible = false;
 
-// Socket.io Connection
-const socket = io();
+const socket = io({ autoConnect: false });
+const typingSound = new Audio('./typing4.mp3');
+typingSound.loop = true;
+typingSound.preload = 'auto';
 
-// ========== CONNECTION FUNCTIONS ==========
+buttondis.style.display = 'none';
+
+init();
+
+function init() {
+  const userName = localStorage.getItem('userName');
+  if (!userName || userName.trim() === '') {
+    window.location.href = "/";
+    return;
+  }
+  setupEventListeners();
+  showSection(HOME);
+}
+
 function handleConnection() {
   if (!btn_loader_toggle) {
     connectToChat();
@@ -29,6 +44,7 @@ function handleConnection() {
 }
 
 function connectToChat() {
+  if (socket.connected) socket.disconnect();
   btn_loader.style.backgroundColor = '#10b981';
   btn_loader_toggle = true;
   document.querySelector('.button_loader').style.animation = 'mymove 1s ease infinite';
@@ -45,83 +61,30 @@ function disconnectFromChat() {
   socket.disconnect();
 }
 
-function handleDisconnect() {
-  let res = confirm("Sure You would Leave ?")
-  if(res){
-    socket.disconnect();
-    resetAll();
-  }else{
-    return;
-  }
-}
-
-// ========== NAVIGATION FUNCTIONS ==========
 function handleNavigation(icon) {
   if (icon.classList.contains('disabled')) return;
-  
   navIcons.forEach(i => {
-    if (!i.classList.contains('disabled')) {
-      i.classList.remove('active');
-    }
+    if (!i.classList.contains('disabled')) i.classList.remove('active');
   });
-  
   icon.classList.add('active');
   const action = icon.getAttribute('data-action');
-  
-  switch(action) {
-    case 'home':
-      showSection(HOME);
-      break;
-    case 'profile':
-      showSection(PROFILE);
-      break;
-    case 'setting':
-      showSection(SETTINGS);
-      break;
-    default:
-      showSection(MESSEGE);
+  switch (action) {
+    case 'home': showSection(HOME); break;
+    case 'profile': showSection(PROFILE); break;
+    case 'setting': showSection(SETTINGS); break;
+    default: showSection(MESSEGE);
   }
-  
   document.querySelector('.button_loader').style.animation = 'none';
 }
 
 function showSection(section) {
-  HOME.style.display = 'none';
-  MESSEGE.style.display = 'none';
-  SETTINGS.style.display = 'none';
-  PROFILE.style.display = 'none';
+  [HOME, MESSEGE, SETTINGS, PROFILE].forEach(sec => sec.style.display = 'none');
   section.style.display = 'block';
-}
-
-// ========== MESSAGE FUNCTIONS ==========
-function handleKeyDown(event) {
-  if (event.key === 'Enter') {
-    sendMessage();
-  }
-}
-const typingSound = new Audio('/typing1.mp3');
-typingSound.loop = true; 
-typingSound.preload = 'auto';
-function handleTyping() {
-  if (!partnerId) return;
-
-  socket.emit('typing', { to: partnerId });
-  // typingSound.currentTime = 0;
-
-  if (typingTimeout) {
-    clearTimeout(typingTimeout);
-  }
-
-  typingTimeout = setTimeout(() => {
-    socket.emit('stop_typing', { to: partnerId });
-    typingSound.pause();
-  },2000);
 }
 
 function sendMessage() {
   const msg = textINPUT.value.trim();
   if (!msg || !partnerId) return;
-  
   socket.emit('chat_message', { to: partnerId, message: msg });
   addMessage('sent', msg);
   textINPUT.value = '';
@@ -136,20 +99,21 @@ function addMessage(type, msg) {
   messegeBODY.scrollTop = messegeBODY.scrollHeight;
 }
 
-// ========== TYPING INDICATORS ==========
+function handleTyping() {
+  if (!partnerId) return;
+  socket.emit('typing', { to: partnerId });
+  if (typingTimeout) clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    socket.emit('stop_typing', { to: partnerId });
+    typingSound.pause();
+  }, 2000);
+}
+
 function showPartnerTyping() {
   if (typingIndicatorVisible) return;
-  
   const msgDiv = document.createElement('div');
   msgDiv.className = 'message received typing-indicator';
-  msgDiv.innerHTML = `
-    <div class="typing-content">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  `;
-  
+  msgDiv.innerHTML = `<div class="typing-content"><span></span><span></span><span></span></div>`;
   messegeBODY.appendChild(msgDiv);
   messegeBODY.scrollTop = messegeBODY.scrollHeight;
   typingIndicatorVisible = true;
@@ -158,14 +122,11 @@ function showPartnerTyping() {
 
 function hidePartnerTyping() {
   const indicators = messegeBODY.querySelectorAll('.typing-indicator');
-  indicators.forEach(indicator => {
-    messegeBODY.removeChild(indicator);
-  });
+  indicators.forEach(indicator => messegeBODY.removeChild(indicator));
   typingIndicatorVisible = false;
   typingSound.pause();
 }
 
-// ========== EVENT HANDLERS ==========
 function handleMatched({ partner }) {
   partnerId = partner;
   showSection(MESSEGE);
@@ -174,9 +135,16 @@ function handleMatched({ partner }) {
   navIcons[1].classList.add('active');
   buttondis.style.display = 'block';
   document.querySelector('[data-action="messege"]').classList.add('active');
-  
   const status = document.getElementById('status');
   if (status) status.innerText = `Matched with ${partnerId}`;
+  const userName = localStorage.getItem('userName');
+  const profileImage = localStorage.getItem('profileImage');
+  if (userName) {
+    socket.emit('send_name', {
+      name: userName,
+      img: profileImage || null
+    });
+  }
 }
 
 function handleIncomingMessage({ from, message }) {
@@ -185,11 +153,10 @@ function handleIncomingMessage({ from, message }) {
 }
 
 function handlePartnerDisconnect() {
-  alert("Disconnected... soul feels empty 😭");
+  alert("Your partner disconnected 💔");
   resetAll();
 }
 
-// ========== SYSTEM FUNCTIONS ==========
 function resetAll() {
   buttondis.style.display = 'none';
   btn_loader.style.backgroundColor = 'black';
@@ -203,51 +170,41 @@ function resetAll() {
   messegeBODY.innerHTML = '';
   typingIndicatorVisible = false;
   showSection(HOME);
-  
-  if (typingTimeout) {
-    clearTimeout(typingTimeout);
-    typingTimeout = null;
-  }
+  if (typingTimeout) clearTimeout(typingTimeout);
+  if (nav_patner) nav_patner.innerText = '';
+  if (nav_img) nav_img.src = '';
 }
 
-// ========== INITIALIZATION ==========
-
 function setupEventListeners() {
-  // Button Events
   btn_loader.addEventListener('click', handleConnection);
-  buttondis.addEventListener('click', handleDisconnect);
-
-  // Navigation Events
+  buttondis.addEventListener('click', () => {
+    const res = confirm("Are you sure you want to leave?");
+    if (res) {
+      socket.disconnect();
+      resetAll();
+    }
+  });
   navIcons.forEach(icon => {
     icon.addEventListener('click', () => handleNavigation(icon));
   });
-
-  // Message Input Events
-  textINPUT.addEventListener('keydown', handleKeyDown);
+  textINPUT.addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendMessage();
+  });
   textINPUT.addEventListener('input', handleTyping);
-
-  // Socket.io Events
+  sendli.addEventListener('click', sendMessage);
   socket.on('matched', handleMatched);
   socket.on('chat_message', handleIncomingMessage);
   socket.on('partner_disconnected', handlePartnerDisconnect);
   socket.on('typing_status', showPartnerTyping);
   socket.on('stop_typing_status', hidePartnerTyping);
+  socket.on('receive_partner_name', ({ name }) => {
+    if (nav_patner) nav_patner.innerText = name;
+  });
+  socket.on('receive_partner_img', ({ img }) => {
+    if (nav_img && img) nav_img.src = img;
+  });
 }
 
-function init() {
-  setupEventListeners();
-  showSection(HOME);
-}
-
-// Prevent gesture events
 ['gesturestart', 'gesturechange', 'gestureend'].forEach(evt => {
   document.addEventListener(evt, e => e.preventDefault());
 });
-
-const sendli = document.getElementById('sendli');
-
-sendli.addEventListener('click', ()=>{
-  sendMessage();
-})
-// Start the application
-init();
