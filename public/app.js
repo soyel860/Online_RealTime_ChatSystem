@@ -11,6 +11,7 @@ const nav_patner = document.getElementById('nav_patner');
 const nav_img = document.getElementById('nav_img');
 const sendli = document.getElementById('sendli');
 
+
 let btn_loader_toggle = false;
 let partnerId = null;
 let typingTimeout = null;

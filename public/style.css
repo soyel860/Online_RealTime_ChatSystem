@@ -301,7 +301,7 @@ img{
     }
 
     .messegeNAV{
-        height: 12%;
+        height: 50;
         position: sticky;
         top: 0;
         background-color: #f5f5f5;
@@ -581,7 +581,7 @@ img{
 }
 
 .messege_mainBody {
-    height: 92vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
 }
@@ -628,12 +628,8 @@ img{
 
 
 .messegeNAV {
-    z-index: 1;
     display: flex;
     align-items: center; 
-    flex-direction: row;
-    padding: 0;
-    flex-grow: 1; 
     gap: 10px;
 }
 
@@ -858,3 +854,4 @@ button:hover {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-5px); }
 }
+
