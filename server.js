@@ -19,7 +19,7 @@ app.use(cors({ origin: '*', credentials: true }));
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-  secret: 'your-secret-key',
+  secret: 'ABCXYZLLM',
   resave: false,
   saveUninitialized: true
 }));
