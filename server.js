@@ -46,7 +46,7 @@ app.get('/privacy', (req, res) => {
 });
 
 app.get('/term', (req, res)=>{
-  req.sendFile(path.join(__dirname, 'public', 'term.html'));
+  res.sendFile(path.join(__dirname, 'public', 'term.html'));
 });
 
 app.get('/about', (req, res) => {
