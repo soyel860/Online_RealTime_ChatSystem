@@ -88,21 +88,3 @@ function redirectToHome() {
 nameInput.addEventListener('keypress', function (e) {
   if (e.key === 'Enter') redirectToHome();
 });
-
-document.addEventListener('DOMContentLoaded', function () {
-  const bubblesContainer = document.getElementById('bubbles');
-  const bubbleCount = 20;
-  for (let i = 0; i < bubbleCount; i++) {
-    const bubble = document.createElement('div');
-    bubble.classList.add('bubble');
-    const size = Math.random() * 80 + 20;
-    bubble.style.width = `${size}px`;
-    bubble.style.height = `${size}px`;
-    bubble.style.left = `${Math.random() * 100}%`;
-    const duration = Math.random() * 1 + 10;
-    bubble.style.animationDuration = `${duration}s`;
-    bubble.style.animationDelay = `${Math.random() * 5}s`;
-    bubblesContainer.appendChild(bubble);
-  }
-});
-
